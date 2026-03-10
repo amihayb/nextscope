@@ -1,0 +1,574 @@
+:root {
+  /* Layout */
+  --sidenav-width: 280px;
+  --explenation-offset: 300px;
+  --plot-offset: 260px;
+  --font-size-base: 20px;
+  --example-button-font-size: 25px;
+
+  /* Backgrounds */
+  --color-bg:           #1C1C1E;   /* App background */
+  --color-surface:      #2A2A2D;   /* Cards, panels, modals */
+  --color-border:       #333336;   /* Dividers, input borders */
+
+  /* Brand Accents */
+  --color-primary:      #D4523A;   /* Buttons, active states, links */
+  --color-secondary:    #7B4E8A;   /* Badges, tags, secondary actions */
+
+  /* Signature Gradient (use for featured cards, hero sections, empty states) */
+  --gradient-brand: linear-gradient(180deg, #D4523A 0%, #C4566B 50%, #7B4E8A 100%);
+
+  /* Typography */
+  --color-text-primary:   #F0EDE8;  /* Headlines, primary labels */
+  --color-text-secondary: #9A9490;  /* Body copy, timestamps, metadata */
+
+  /* Semantic */
+  --color-success:  #3DB87A;
+  --color-warning:  #C47A10;
+  --color-error:    #D94F3D;
+  --color-info:     #3A8FC4;
+
+  /* Alpha variants */
+  --color-primary-alpha: rgba(212, 82, 58, 0.15);
+
+  /* On-primary text — light on dark buttons in dark theme */
+  --color-on-primary:   #F0EDE8;
+
+  /* Shadows */
+  --color-shadow:    rgba(0, 0, 0, 0.4);
+  --color-backdrop:  rgba(0, 0, 0, 0.6);
+  --shadow-subtle:   0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-medium:   0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* ─── Light theme overrides ─────────────────────────────────────────────── */
+[data-theme="light"] {
+  --color-bg:             #F5F2EE;
+  --color-surface:        #EDEAE5;
+  --color-border:         #D6D0C8;
+
+  --color-primary:        #C94530;
+  --color-secondary:      #6B3F7A;
+
+  /* --gradient-brand intentionally unchanged */
+
+  --color-text-primary:   #1C1A18;
+  --color-text-secondary: #6B635A;
+
+  --color-success:        #2D9A63;
+  --color-warning:        #B56E0A;
+  --color-error:          #C43828;
+  --color-info:           #2E7DB0;
+
+  /* On-primary text — dark bg color gives best contrast on red button */
+  --color-on-primary:     #F5F2EE;
+
+  /* Alpha variants adjusted for light primary */
+  --color-primary-alpha:  rgba(201, 69, 48, 0.12);
+
+  /* Shadows flip to soft warm tones */
+  --color-shadow:    rgba(28, 20, 14, 0.12);
+  --color-backdrop:  rgba(28, 20, 14, 0.5);
+  --shadow-subtle:   0 1px 3px var(--color-shadow);
+  --shadow-medium:   0 2px 8px var(--color-shadow);
+  --shadow-elevated: 0 4px 16px var(--color-shadow);
+}
+
+body {
+  font-family: "Lato", sans-serif;
+  margin: 0;
+  padding-top: 65px;
+  font-size: var(--font-size-base);
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+}
+
+#file-selector {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+span {
+  position: relative;
+}
+
+.topnav {
+  width: 100%;
+  left: 0;
+  top: 0;
+  position: fixed;
+  background-color: var(--color-surface);
+  display: flex;
+  align-items: center;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  z-index: 10;
+  box-shadow: var(--shadow-medium);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.topnav a,
+.topnav span,
+.topnav custom-file-upload {
+  float: left;
+  color: var(--color-text-primary);
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: inherit;
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+.topnav a:first-child {
+  padding-left: 24px;
+}
+
+.headImg {
+  padding: 8px 16px;
+  width: 180px;
+  margin-left: auto;
+}
+
+.topnav img {
+  cursor: pointer;
+}
+
+.topnav a:hover,
+.topnav span:hover {
+  background-color: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+#explenation_text .button {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  font-size: inherit;
+  cursor: pointer;
+  box-shadow: var(--shadow-subtle);
+}
+
+#explenation_text .button:hover {
+  background-color: var(--color-secondary);
+  color: var(--color-on-primary);
+}
+
+.topnav input {
+  text-align: left;
+  width: 70%;
+  font-size: inherit;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+#labelsNavBar {
+  top: 65px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 65px;
+  align-items: center;
+  z-index: 9;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+#labelsNavBar input {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin: 0 12px;
+}
+
+.sidenav {
+  width: var(--sidenav-width);
+  position: fixed;
+  z-index: 1;
+  top: 65px;
+  bottom: 0;
+  left: 0;
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+  padding-bottom: 5px;
+  z-index: 5;
+  box-shadow: var(--shadow-medium);
+  border-right: 1px solid var(--color-border);
+}
+
+.sidenav a {
+  padding: 6px 6px 6px 6px;
+  text-decoration: none;
+  font-size: 16px;
+  color: var(--color-text-primary);
+  display: block;
+}
+
+.sidenav a:hover {
+  background-color: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.sidenav .button {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  padding: 20px;
+  text-align: left;
+  text-decoration: none;
+  display: block;
+  font-size: inherit;
+  margin: 10px;
+  border-radius: 12px;
+}
+
+#exampleDataButton {
+  font-size: var(--example-button-font-size);
+}
+
+.sidenav .button:hover,
+.sidenav .button.active {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+
+.sidenav h1 {
+  text-align: center;
+}
+
+.sidenav h2 {
+  text-align: center;
+}
+
+.sidenav select {
+  width: 77%;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+#xaxis_dropdown {
+  padding: 8px 10px;
+}
+
+#xaxis_dropdown,
+#xaxis_dropdown label,
+#xaxis_dropdown select,
+.container1 {
+  font-size: 16px;
+}
+
+#xaxis_dropdown label {
+  color: var(--color-text-secondary);
+}
+
+.checkboxesPlace {
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+  overflow-y: auto;
+}
+
+#explenation_text {
+  margin-left: var(--explenation-offset);
+  margin-top: 30px;
+  font-size: inherit;
+  color: var(--color-text-secondary);
+  padding: 0px 10px;
+  line-height: 27px;
+}
+
+.explenation-header {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 0 12px;
+  color: var(--color-text-primary);
+}
+
+/* Featured hero element - gradient used sparingly (one per screen) */
+.drop-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 360px;
+  height: 220px;
+  margin: 24px auto 12px;
+  border: 4px dashed var(--color-primary);
+  border-radius: 22px;
+  color: var(--color-text-primary);
+  background: var(--gradient-brand);
+  box-shadow: var(--shadow-elevated);
+  font-size: 72px;
+  cursor: pointer;
+  transition: opacity 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.drop-indicator:hover {
+  opacity: 0.95;
+  border-color: var(--color-secondary);
+  box-shadow: var(--shadow-elevated);
+}
+
+.plot {
+  margin-left: var(--plot-offset);
+  font-size: 28px;
+  padding: 0px 0px;
+  background-color: var(--color-bg);
+}
+
+body.labels-open {
+  padding-top: 130px;
+}
+
+body.labels-open .sidenav {
+  top: 130px;
+  bottom: 0;
+}
+
+body.labels-open #explenation_text {
+  margin-top: 130px;
+}
+
+#sidenav-resizer {
+  position: fixed;
+  top: 65px;
+  bottom: 0;
+  left: var(--sidenav-width);
+  width: 8px;
+  margin-left: -4px;
+  cursor: col-resize;
+  z-index: 6;
+  background: transparent;
+}
+
+#sidenav-resizer::after {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 2px;
+  margin: 0 auto;
+  background-color: var(--color-border);
+}
+
+body.labels-open #sidenav-resizer {
+  top: 130px;
+}
+
+body.resizing {
+  cursor: col-resize;
+  user-select: none;
+}
+
+.drop-target--active {
+  outline: 2px dashed var(--color-primary);
+  background-color: var(--color-primary-alpha);
+}
+
+@media screen and (max-height: 750px) {
+  .sidenav {
+    padding-top: 15px;
+  }
+  .sidenav a {
+    font-size: 18px;
+  }
+}
+
+/* Checkbox container */
+.container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: inherit;
+  color: var(--color-text-primary);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+}
+
+.container:hover input ~ .checkmark {
+  background-color: var(--color-border);
+  border-color: var(--color-primary);
+}
+
+.container input:checked ~ .checkmark {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* Checkmark indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.container .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--color-text-primary);
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+/* Context menu - panel/modal styling */
+.context-menu {
+  display: none;
+  position: absolute;
+  z-index: 10;
+  padding: 12px 0;
+  width: 240px;
+  background-color: var(--color-surface);
+  border: solid 1px var(--color-border);
+  box-shadow: var(--shadow-elevated);
+  border-radius: 8px;
+}
+
+.context-menu--active {
+  display: block;
+}
+
+.context-menu__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.context-menu__item {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.context-menu__item:last-child {
+  margin-bottom: 0;
+}
+
+.context-menu__link {
+  display: block;
+  padding: 4px 12px;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.context-menu__link:hover {
+  color: var(--color-on-primary);
+  background-color: var(--color-primary);
+}
+
+/* Focus rings - primary accent */
+.topnav a:focus-visible,
+.sidenav a:focus-visible,
+.button:focus-visible,
+.context-menu__link:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* SweetAlert2 dark theme overrides */
+.swal2-popup {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text-primary) !important;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-elevated) !important;
+}
+
+.swal2-title,
+.swal2-html-container {
+  color: var(--color-text-primary) !important;
+}
+
+.swal2-icon.swal2-info {
+  border-color: var(--color-info) !important;
+  color: var(--color-info) !important;
+}
+
+.swal2-styled.swal2-confirm {
+  background-color: var(--color-primary) !important;
+  color: var(--color-on-primary) !important;
+}
+
+.swal2-styled.swal2-confirm:hover {
+  background-color: var(--color-secondary) !important;
+}
+
+.swal2-backdrop-show {
+  background: var(--color-backdrop) !important;
+}
+
+/* ─── Theme toggle button ────────────────────────────────────────────────── */
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 18px;
+  line-height: 1;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.theme-toggle:hover {
+  background-color: var(--color-border);
+}
+
+#theme-icon {
+  display: block;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.theme-toggle:active #theme-icon {
+  opacity: 0.6;
+  transform: rotate(30deg);
+}

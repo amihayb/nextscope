@@ -1,0 +1,26 @@
+{
+  "name": "Glimpse – Visualize your data",
+  "short_name": "Glimpse",
+  "description": "A web-based tool for analyzing signals, metrics, and data",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#1C1C1E",
+  "theme_color": "#2A2A2D",
+  "categories": ["utilities", "productivity"],
+  "icons": [
+    {
+      "src": "images/logo-title.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "images/logo-title.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
