@@ -1,7 +1,7 @@
 (() => {
-  const Glimpse = window.Glimpse || (window.Glimpse = {});
-  Glimpse.ui = Glimpse.ui || {};
-  const ui = Glimpse.ui;
+  const Nextscope = window.Nextscope || (window.Nextscope = {});
+  Nextscope.ui = Nextscope.ui || {};
+  const ui = Nextscope.ui;
 
   function getCheckedBoxes(chkboxName) {
     const checkboxes = document.getElementsByName(chkboxName);
@@ -45,8 +45,8 @@
     checkbox.id = colName;
     checkbox.name = "signalCheckbox";
     checkbox.onclick = () => {
-      if (Glimpse.actions && Glimpse.actions.selectSignals) {
-        Glimpse.actions.selectSignals();
+      if (Nextscope.actions && Nextscope.actions.selectSignals) {
+        Nextscope.actions.selectSignals();
       }
     };
 
@@ -55,8 +55,8 @@
     checkbox2.id = colName;
     checkbox2.name = "signalCheckbox2";
     checkbox2.onclick = () => {
-      if (Glimpse.actions && Glimpse.actions.selectSignals) {
-        Glimpse.actions.selectSignals();
+      if (Nextscope.actions && Nextscope.actions.selectSignals) {
+        Nextscope.actions.selectSignals();
       }
     };
 

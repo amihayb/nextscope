@@ -1,7 +1,7 @@
 {
-  "name": "Glimpse – Visualize your data",
-  "short_name": "Glimpse",
-  "description": "A web-based tool for analyzing signals, metrics, and data",
+  "name": "Nextscope – NextPower Telemetry Analysis",
+  "short_name": "Nextscope",
+  "description": "Interactive telemetry analysis tool for loading, visualizing, and inspecting recorded NextPower system data.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -11,16 +11,16 @@
   "categories": ["utilities", "productivity"],
   "icons": [
     {
-      "src": "images/logo-title.png",
-      "sizes": "any",
+      "src": "images/nextscope-icon-192.png",
+      "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "images/logo-title.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
+      "src": "images/nextscope-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }

@@ -1,5 +1,5 @@
 /**
- * Glimpse Service Worker
+ * Nextscope Service Worker
  * Strategy:
  *   - App shell (local assets) : cache-first, populate on install
  *   - Google Fonts              : network-first, cache on success
@@ -10,7 +10,7 @@
  */
 
 const CACHE_VERSION = 'v1';
-const CACHE_NAME = `glimpse-${CACHE_VERSION}`;
+const CACHE_NAME = `nextscope-${CACHE_VERSION}`;
 
 const APP_SHELL = [
   './',
@@ -25,6 +25,9 @@ const APP_SHELL = [
   './fonts/fontawesome-webfont.woff2',
   './fonts/fontawesome-webfont.woff',
   './fonts/fontawesome-webfont.ttf',
+  /* images */
+  './images/nextpower-logo-white.svg',
+  './images/nextpower-logo-black.svg',
   /* app scripts */
   './js/config.js',
   './js/dataTransforms.js',
@@ -35,10 +38,11 @@ const APP_SHELL = [
   './js/app.js',
   './js/contextMenu.js',
   './js/theme.js',
-  /* images */
-  './images/glimpse.ico',
-  './images/logo-title.svg',
-  './images/logo-title.png'
+  /* remaining images */
+  './images/nextscope.ico',
+  './images/nextscope-icon-192.png',
+  './images/nextscope-icon-512.png',
+  './images/logo-title.svg'
 ];
 
 /* ── Install: pre-cache the entire app shell ─────────────────────────────── */

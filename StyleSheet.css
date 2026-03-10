@@ -127,9 +127,22 @@ span {
   border-radius: 12px;
 }
 
-.topnav a:first-child {
+.topnav a:first-of-type {
   padding-left: 24px;
 }
+
+.topnav-brand-logo {
+  width: 180px;
+  padding: 8px 16px;
+  flex-shrink: 0;
+  cursor: default;
+}
+
+.logo-light-theme { display: none; }
+.logo-dark-theme  { display: block; }
+
+[data-theme="light"] .logo-light-theme { display: block; }
+[data-theme="light"] .logo-dark-theme  { display: none; }
 
 .headImg {
   padding: 8px 16px;

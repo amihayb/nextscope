@@ -1,7 +1,7 @@
 (() => {
-  const Glimpse = window.Glimpse || (window.Glimpse = {});
-  Glimpse.plot = Glimpse.plot || {};
-  const plot = Glimpse.plot;
+  const Nextscope = window.Nextscope || (window.Nextscope = {});
+  Nextscope.plot = Nextscope.plot || {};
+  const plot = Nextscope.plot;
 
   const defaultConfig = {
     responsive: true,

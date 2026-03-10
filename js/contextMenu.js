@@ -203,8 +203,8 @@
    */
   function menuItemListener(link) {
     toggleMenuOff();
-    if (window.Glimpse && window.Glimpse.actions && window.Glimpse.actions.menuItemExecute) {
-      window.Glimpse.actions.menuItemExecute(taskItemInContext.id, link.getAttribute("data-action"));
+    if (window.Nextscope && window.Nextscope.actions && window.Nextscope.actions.menuItemExecute) {
+      window.Nextscope.actions.menuItemExecute(taskItemInContext.id, link.getAttribute("data-action"));
     }
   }
 

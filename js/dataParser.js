@@ -1,7 +1,7 @@
 (() => {
-  const Glimpse = window.Glimpse || (window.Glimpse = {});
-  Glimpse.data = Glimpse.data || {};
-  const data = Glimpse.data;
+  const Nextscope = window.Nextscope || (window.Nextscope = {});
+  Nextscope.data = Nextscope.data || {};
+  const data = Nextscope.data;
 
   function parseLine(row) {
     const safeRow = row == null ? "" : String(row);
@@ -37,11 +37,11 @@
 
   function getHeader(resultLines, options) {
     const headerObj = {
-      header: Glimpse.config.defaultHeader.slice(),
+      header: Nextscope.config.defaultHeader.slice(),
       startIdx: 0
     };
 
-    const scanLimit = Math.min(Glimpse.config.maxHeaderScanLines, resultLines.length);
+    const scanLimit = Math.min(Nextscope.config.maxHeaderScanLines, resultLines.length);
     let detectedHeader = null;
     let detectedStartIdx = 0;
 

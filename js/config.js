@@ -1,6 +1,6 @@
 (() => {
-  window.Glimpse = window.Glimpse || {};
-  window.Glimpse.config = {
+  window.Nextscope = window.Nextscope || {};
+  window.Nextscope.config = {
     defaultSampleTime: 0.01,
     maxHeaderScanLines: 50,
     defaultHeader: [

@@ -25,9 +25,9 @@
   function refreshPlotTheme() {
     const plotEl = document.getElementById('plot');
     if (!plotEl || !plotEl.data || !plotEl.data.length) return;
-    if (window.Glimpse && window.Glimpse.plot && window.Glimpse.plot.buildLayout) {
+    if (window.Nextscope && window.Nextscope.plot && window.Nextscope.plot.buildLayout) {
       const rowCount = plotEl.layout && plotEl.layout.grid ? plotEl.layout.grid.rows : 1;
-      const newLayout = window.Glimpse.plot.buildLayout(rowCount, plotEl.layout.grid || {});
+      const newLayout = window.Nextscope.plot.buildLayout(rowCount, plotEl.layout.grid || {});
       Plotly.relayout('plot', {
         paper_bgcolor: newLayout.paper_bgcolor,
         plot_bgcolor: newLayout.plot_bgcolor,

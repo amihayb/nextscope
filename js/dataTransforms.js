@@ -1,7 +1,7 @@
 (() => {
-  const Glimpse = window.Glimpse || (window.Glimpse = {});
-  Glimpse.data = Glimpse.data || {};
-  const data = Glimpse.data;
+  const Nextscope = window.Nextscope || (window.Nextscope = {});
+  Nextscope.data = Nextscope.data || {};
+  const data = Nextscope.data;
 
   function mean(array) {
     return array.reduce((a, b) => parseFloat(a) + parseFloat(b)) / array.length;
@@ -29,7 +29,7 @@
   }
 
   function diff(y, sampleTime) {
-    const Ts = sampleTime ?? Glimpse.config.defaultSampleTime;
+    const Ts = sampleTime ?? Nextscope.config.defaultSampleTime;
     const d = [];
     for (let i = 1; i < y.length; i++) {
       d[i] = (Number(y[i]) - Number(y[i - 1])) / Ts;
@@ -39,7 +39,7 @@
   }
 
   function integrate(y, sampleTime) {
-    const Ts = sampleTime ?? Glimpse.config.defaultSampleTime;
+    const Ts = sampleTime ?? Nextscope.config.defaultSampleTime;
     const yInt = [];
     yInt[0] = parseFloat(y[0]);
     for (let i = 1; i < y.length; i++) {
@@ -49,7 +49,7 @@
   }
 
   function filter(y, ws) {
-    const Ts = Glimpse.config.defaultSampleTime;
+    const Ts = Nextscope.config.defaultSampleTime;
     const w = parseFloat(ws);
     const pi = 3.1416;
     const D0 = pi ** 2 * w ** 2 + 140 * pi * w + 10000;

@@ -1,7 +1,7 @@
 (() => {
-  const Glimpse = window.Glimpse || (window.Glimpse = {});
-  Glimpse.io = Glimpse.io || {};
-  const io = Glimpse.io;
+  const Nextscope = window.Nextscope || (window.Nextscope = {});
+  Nextscope.io = Nextscope.io || {};
+  const io = Nextscope.io;
 
   function attachFileSelector() {
     const fileSelector = document.getElementById('file-selector');
@@ -69,9 +69,9 @@
       const labelsInput = document.getElementById("labelsInput");
       const useLabels = labelsNav && labelsNav.style.display !== "none";
       const labelsText = labelsInput ? labelsInput.value : "";
-      const parsed = Glimpse.data.parseText(text, { useLabels, labelsText });
-      if (Glimpse.actions && Glimpse.actions.handleDataLoaded) {
-        Glimpse.actions.handleDataLoaded({
+      const parsed = Nextscope.data.parseText(text, { useLabels, labelsText });
+      if (Nextscope.actions && Nextscope.actions.handleDataLoaded) {
+        Nextscope.actions.handleDataLoaded({
           rows: parsed.rows,
           header: parsed.header,
           fileName: file.name

@@ -1,22 +1,22 @@
 (() => {
-  const Glimpse = window.Glimpse || (window.Glimpse = {});
-  Glimpse.state = {
+  const Nextscope = window.Nextscope || (window.Nextscope = {});
+  Nextscope.state = {
     rows: {},
     header: [],
     fileName: null
   };
-  Glimpse.actions = Glimpse.actions || {};
+  Nextscope.actions = Nextscope.actions || {};
 
   function handleDataLoaded(payload) {
-    Glimpse.state.rows = payload.rows;
-    Glimpse.state.header = payload.header;
-    Glimpse.state.fileName = payload.fileName || null;
+    Nextscope.state.rows = payload.rows;
+    Nextscope.state.header = payload.header;
+    Nextscope.state.fileName = payload.fileName || null;
 
-    Glimpse.ui.cleanUp();
-    Glimpse.ui.addDropdown(payload.header);
-    payload.header.forEach(Glimpse.ui.addCheckbox);
+    Nextscope.ui.cleanUp();
+    Nextscope.ui.addDropdown(payload.header);
+    payload.header.forEach(Nextscope.ui.addCheckbox);
 
-    if (Glimpse.data.isEcopiaHeader(payload.header)) {
+    if (Nextscope.data.isEcopiaHeader(payload.header)) {
       setEcopiaRec();
     }
 
@@ -25,9 +25,9 @@
   }
 
   function plotDefaultSignals() {
-    const rows = Glimpse.state.rows;
-    const header = Glimpse.state.header;
-    const xAxis = Glimpse.ui.getXAxisName();
+    const rows = Nextscope.state.rows;
+    const header = Nextscope.state.header;
+    const xAxis = Nextscope.ui.getXAxisName();
     const preferred = ["OUTPUT", "ENCODERS_DIFF"];
     const available = preferred.filter(name => rows[name]);
     let signals = available;
@@ -35,32 +35,32 @@
       signals = header.filter(name => name !== xAxis).slice(0, 2);
     }
 
-    const traces = signals.map(name => Glimpse.plot.buildTrace(name, 0, rows, xAxis));
-    const layout = Glimpse.plot.buildLayout(1, { roworder: 'bottom to top' });
-    Glimpse.plot.render(traces, layout);
+    const traces = signals.map(name => Nextscope.plot.buildTrace(name, 0, rows, xAxis));
+    const layout = Nextscope.plot.buildLayout(1, { roworder: 'bottom to top' });
+    Nextscope.plot.render(traces, layout);
   }
 
   function showExample() {
     const header = ["TIME", "Sine", "Cosine", "Random"];
-    const rows = Glimpse.data.defineObj(header);
+    const rows = Nextscope.data.defineObj(header);
     rows["TIME"] = Plotly.d3.range(0.1, 10, 0.1);
     rows["Sine"] = rows["TIME"].map(x => Math.sin(x));
     rows["Cosine"] = rows["TIME"].map(x => Math.cos(x));
     rows["Random"] = rows["TIME"].map(x => Math.random());
 
-    Glimpse.state.rows = rows;
-    Glimpse.state.header = header;
+    Nextscope.state.rows = rows;
+    Nextscope.state.header = header;
 
-    Glimpse.ui.cleanUp();
-    Glimpse.ui.addDropdown(header);
-    header.forEach(Glimpse.ui.addCheckbox);
+    Nextscope.ui.cleanUp();
+    Nextscope.ui.addDropdown(header);
+    header.forEach(Nextscope.ui.addCheckbox);
 
     const traces = [
-      Glimpse.plot.buildTrace(header[1], 1, rows, "TIME"),
-      Glimpse.plot.buildTrace(header[2], 1, rows, "TIME")
+      Nextscope.plot.buildTrace(header[1], 1, rows, "TIME"),
+      Nextscope.plot.buildTrace(header[2], 1, rows, "TIME")
     ];
-    const layout = Glimpse.plot.buildLayout(1, { roworder: 'bottom to top' });
-    Glimpse.plot.render(traces, layout);
+    const layout = Nextscope.plot.buildLayout(1, { roworder: 'bottom to top' });
+    Nextscope.plot.render(traces, layout);
     setExampleButtonVisible(false);
   }
 
@@ -73,34 +73,34 @@
   }
 
   function selectSignals() {
-    const checkedBoxes = Glimpse.ui.getCheckedBoxes("signalCheckbox");
-    const checkedBoxes2 = Glimpse.ui.getCheckedBoxes("signalCheckbox2");
-    const rows = Glimpse.state.rows;
-    const xAxis = Glimpse.ui.getXAxisName();
+    const checkedBoxes = Nextscope.ui.getCheckedBoxes("signalCheckbox");
+    const checkedBoxes2 = Nextscope.ui.getCheckedBoxes("signalCheckbox2");
+    const rows = Nextscope.state.rows;
+    const xAxis = Nextscope.ui.getXAxisName();
 
     const traces = [];
     checkedBoxes.forEach(box => {
-      traces.push(Glimpse.plot.buildTrace(box.id, 1, rows, xAxis));
+      traces.push(Nextscope.plot.buildTrace(box.id, 1, rows, xAxis));
     });
     checkedBoxes2.forEach(box => {
-      traces.push(Glimpse.plot.buildTrace(box.id, 2, rows, xAxis));
+      traces.push(Nextscope.plot.buildTrace(box.id, 2, rows, xAxis));
     });
 
-    const layout = Glimpse.plot.buildLayout(2);
-    Glimpse.plot.render(traces, layout);
+    const layout = Nextscope.plot.buildLayout(2);
+    Nextscope.plot.render(traces, layout);
   }
 
   function setEcopiaRec() {
-    const rows = Glimpse.state.rows;
-    rows["Yaw"] = Glimpse.data.transforms.mult(rows["Yaw"], 0.01);
-    rows["Pitch"] = Glimpse.data.transforms.mult(rows["Pitch"], 0.01);
-    rows["Roll"] = Glimpse.data.transforms.mult(rows["Roll"], 0.01);
-    rows["Yaw_angFix"] = Glimpse.data.transforms.fixAngle(rows["Yaw"]);
-    Glimpse.ui.addCheckbox("Yaw_angFix");
+    const rows = Nextscope.state.rows;
+    rows["Yaw"] = Nextscope.data.transforms.mult(rows["Yaw"], 0.01);
+    rows["Pitch"] = Nextscope.data.transforms.mult(rows["Pitch"], 0.01);
+    rows["Roll"] = Nextscope.data.transforms.mult(rows["Roll"], 0.01);
+    rows["Yaw_angFix"] = Nextscope.data.transforms.fixAngle(rows["Yaw"]);
+    Nextscope.ui.addCheckbox("Yaw_angFix");
   }
 
   function menuItemExecute(caller, action) {
-    const rows = Glimpse.state.rows;
+    const rows = Nextscope.state.rows;
     switch (action) {
       case "Rename":
         renameVar(caller);
@@ -108,43 +108,43 @@
       case "Mult": {
         const factor = prompt(caller + " x ? ", 0.01);
         if (factor !== null) {
-          const newVarName = Glimpse.data.strClean(caller + "_x_" + factor);
-          rows[newVarName] = Glimpse.data.transforms.mult(rows[caller], factor);
-          Glimpse.ui.addCheckbox(newVarName);
+          const newVarName = Nextscope.data.strClean(caller + "_x_" + factor);
+          rows[newVarName] = Nextscope.data.transforms.mult(rows[caller], factor);
+          Nextscope.ui.addCheckbox(newVarName);
         }
         break;
       }
       case "Diff":
-        rows[caller + "_diff"] = Glimpse.data.transforms.diff(rows[caller]);
-        Glimpse.ui.addCheckbox(caller + "_diff");
+        rows[caller + "_diff"] = Nextscope.data.transforms.diff(rows[caller]);
+        Nextscope.ui.addCheckbox(caller + "_diff");
         break;
       case "Integrate":
-        rows[caller + "_int"] = Glimpse.data.transforms.integrate(rows[caller]);
-        Glimpse.ui.addCheckbox(caller + "_int");
+        rows[caller + "_int"] = Nextscope.data.transforms.integrate(rows[caller]);
+        Nextscope.ui.addCheckbox(caller + "_int");
         break;
       case "filter": {
         const filterW = prompt("LPF Cutoff Frequency? [Hz] ", 5);
         if (filterW !== null) {
-          rows[caller + "_filter"] = Glimpse.data.transforms.filter(rows[caller], filterW);
-          Glimpse.ui.addCheckbox(caller + "_filter");
+          rows[caller + "_filter"] = Nextscope.data.transforms.filter(rows[caller], filterW);
+          Nextscope.ui.addCheckbox(caller + "_filter");
         }
         break;
       }
       case "Detrend":
-        rows[caller + "_detrend"] = Glimpse.data.transforms.detrend(rows[caller]);
-        Glimpse.ui.addCheckbox(caller + "_detrend");
+        rows[caller + "_detrend"] = Nextscope.data.transforms.detrend(rows[caller]);
+        Nextscope.ui.addCheckbox(caller + "_detrend");
         break;
       case "removeFirst":
-        rows[caller + "_rem1"] = Glimpse.data.transforms.removeFirst(rows[caller]);
-        Glimpse.ui.addCheckbox(caller + "_rem1");
+        rows[caller + "_rem1"] = Nextscope.data.transforms.removeFirst(rows[caller]);
+        Nextscope.ui.addCheckbox(caller + "_rem1");
         break;
       case "removeMean":
-        rows[caller + "_remMean"] = Glimpse.data.transforms.removeMean(rows[caller]);
-        Glimpse.ui.addCheckbox(caller + "_remMean");
+        rows[caller + "_remMean"] = Nextscope.data.transforms.removeMean(rows[caller]);
+        Nextscope.ui.addCheckbox(caller + "_remMean");
         break;
       case "fixAngle":
-        rows[caller + "_angFix"] = Glimpse.data.transforms.fixAngle(rows[caller]);
-        Glimpse.ui.addCheckbox(caller + "_angFix");
+        rows[caller + "_angFix"] = Nextscope.data.transforms.fixAngle(rows[caller]);
+        Nextscope.ui.addCheckbox(caller + "_angFix");
         break;
       case "showStat":
         showStat();
@@ -161,7 +161,7 @@
   function renameVar(oldName) {
     const newName = prompt("Please enter new variable name", oldName);
     if (newName != null && newName !== oldName) {
-      const rows = Glimpse.state.rows;
+      const rows = Nextscope.state.rows;
       rows[newName] = rows[oldName];
       delete rows[oldName];
       const toChange = document.getElementById(oldName);
@@ -181,8 +181,8 @@
     } catch {
       yRange = gd.layout.yaxis2.range;
     }
-    const rows = Glimpse.state.rows;
-    const xAxis = Glimpse.ui.getXAxisName();
+    const rows = Nextscope.state.rows;
+    const xAxis = Nextscope.ui.getXAxisName();
 
     let xIdx = [];
     if (typeof rows[xAxis][2] === 'string') {
@@ -215,8 +215,8 @@
         }
       }
       stat.Name.push(trace.name);
-      stat.Mean.push(Glimpse.data.stats.mean(yInside));
-      stat.STD.push(Glimpse.data.stats.std(yInside));
+      stat.Mean.push(Nextscope.data.stats.mean(yInside));
+      stat.STD.push(Nextscope.data.stats.std(yInside));
       stat.Min.push(Math.min(...yInside));
       stat.Max.push(Math.max(...yInside));
     });
@@ -239,8 +239,8 @@
   function cutToZoom() {
     const gd = document.getElementById('plot');
     const xRange = gd.layout.xaxis.range;
-    const xAxis = Glimpse.ui.getXAxisName();
-    const rows = Glimpse.state.rows;
+    const xAxis = Nextscope.ui.getXAxisName();
+    const rows = Nextscope.state.rows;
 
     let idx = [];
     if (typeof rows[xAxis][2] !== 'string') {
@@ -259,10 +259,10 @@
   }
 
   function relativeTime() {
-    const rows = Glimpse.state.rows;
-    const Ts = prompt("Time Sample?", Glimpse.config.defaultSampleTime);
-    Glimpse.state.rows = addTimeVectorToExistingObject(rows, Ts);
-    Glimpse.ui.addCheckbox("Time");
+    const rows = Nextscope.state.rows;
+    const Ts = prompt("Time Sample?", Nextscope.config.defaultSampleTime);
+    Nextscope.state.rows = addTimeVectorToExistingObject(rows, Ts);
+    Nextscope.ui.addCheckbox("Time");
 
     const selectElement = document.getElementById("x_axis");
     const newOption = document.createElement("option");
@@ -304,7 +304,7 @@
   }
 
   function export2csv() {
-    Glimpse.data.exportToCsv('download.csv', Glimpse.state.rows);
+    Nextscope.data.exportToCsv('download.csv', Nextscope.state.rows);
   }
 
   function addLabelsLine() {
@@ -381,34 +381,34 @@
   }
 
   function init() {
-    if (Glimpse.io && Glimpse.io.attachFileSelector) {
-      Glimpse.io.attachFileSelector();
+    if (Nextscope.io && Nextscope.io.attachFileSelector) {
+      Nextscope.io.attachFileSelector();
     }
-    if (Glimpse.io && Glimpse.io.attachDragAndDrop) {
-      Glimpse.io.attachDragAndDrop(["explenation_text", "plot"]);
+    if (Nextscope.io && Nextscope.io.attachDragAndDrop) {
+      Nextscope.io.attachDragAndDrop(["explenation_text", "plot"]);
     }
     setExampleButtonVisible(true);
     initSidenavResizer();
     initDropIndicator();
   }
 
-  Glimpse.actions.handleDataLoaded = handleDataLoaded;
-  Glimpse.actions.showExample = showExample;
-  Glimpse.actions.selectSignals = selectSignals;
-  Glimpse.actions.menuItemExecute = menuItemExecute;
-  Glimpse.actions.renameVar = renameVar;
-  Glimpse.actions.showStat = showStat;
-  Glimpse.actions.cutToZoom = cutToZoom;
-  Glimpse.actions.relativeTime = relativeTime;
-  Glimpse.actions.markDataTips = markDataTips;
-  Glimpse.actions.export2csv = export2csv;
-  Glimpse.actions.addLabelsLine = addLabelsLine;
+  Nextscope.actions.handleDataLoaded = handleDataLoaded;
+  Nextscope.actions.showExample = showExample;
+  Nextscope.actions.selectSignals = selectSignals;
+  Nextscope.actions.menuItemExecute = menuItemExecute;
+  Nextscope.actions.renameVar = renameVar;
+  Nextscope.actions.showStat = showStat;
+  Nextscope.actions.cutToZoom = cutToZoom;
+  Nextscope.actions.relativeTime = relativeTime;
+  Nextscope.actions.markDataTips = markDataTips;
+  Nextscope.actions.export2csv = export2csv;
+  Nextscope.actions.addLabelsLine = addLabelsLine;
 
   document.addEventListener('DOMContentLoaded', init);
 
   window.about = function () {
     Swal.fire({
-      title: "Glimpse<br>Visualize your data",
+      title: "Nextscope<br>NextPower Telemetry Analysis",
       html: "For support, contact me:<br><br> Amihay Blau <br> mail: amihay@blaurobotics.co.il <br> Phone: +972-54-6668902",
       icon: "info"
     });
