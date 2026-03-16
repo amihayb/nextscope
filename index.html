@@ -54,6 +54,9 @@
     <img src="images/nextpower-logo-white.svg" alt="NextPower logo" class="topnav-brand-logo logo-dark-theme">
     <img src="images/nextpower-logo-black.svg" alt="NextPower logo" class="topnav-brand-logo logo-light-theme">
     <a href="" title="Nextscope"><i class="fa fa-home"></i></a>
+    <a id="serial-connect-btn" onclick="Nextscope.serial.toggleConnection()" title="Connect to Serial Port"><i class="fa fa-plug"></i></a>
+    <a id="serial-fetch-btn" onclick="Nextscope.serial.fetchData()" title="Fetch Data"><i class="fa fa-download"></i></a>
+    <a id="serial-erase-btn" onclick="Nextscope.serial.eraseData()" title="Erase Data"><i class="fa fa-trash"></i></a>
     <span><i class="fa fa-folder-open" title="Open File"></i>
       <input id="file-selector" type="file" />
     </span>
@@ -152,6 +155,7 @@
   <script src="js/app.js"></script>
   <script src="js/contextMenu.js"></script>
   <script src="js/theme.js"></script>
+  <script src="js/serial.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {

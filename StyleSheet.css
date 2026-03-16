@@ -160,6 +160,20 @@ span {
   color: var(--color-text-primary);
 }
 
+#serial-connect-btn.serial-connected {
+  color: var(--color-primary);
+}
+
+#serial-connect-btn.serial-connected:hover {
+  color: var(--color-primary);
+}
+
+.serial-disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+
 #explenation_text .button {
   background-color: var(--color-primary);
   color: var(--color-on-primary);
