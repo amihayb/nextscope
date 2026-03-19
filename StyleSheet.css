@@ -296,6 +296,27 @@ span {
   font-size: 16px;
 }
 
+.signal-search-wrapper {
+  padding: 8px 10px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.signal-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.signal-search-input::placeholder {
+  color: var(--color-text-secondary);
+}
+
 #xaxis_dropdown {
   padding: 8px 10px;
 }

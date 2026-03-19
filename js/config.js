@@ -2,6 +2,7 @@
   window.Nextscope = window.Nextscope || {};
   window.Nextscope.config = {
     defaultSampleTime: 0.01,
+    dataTipsFontSize: 12,
     maxHeaderScanLines: 50,
     defaultHeader: [
       "TIME",

@@ -3,7 +3,10 @@
   Nextscope.state = {
     rows: {},
     header: [],
-    fileName: null
+    fileName: null,
+    lastRenderHadSignals: false,
+    lastRenderHadTracesOnY1: false,
+    lastRenderHadTracesOnY2: false
   };
   Nextscope.actions = Nextscope.actions || {};
 
@@ -14,6 +17,7 @@
 
     Nextscope.ui.cleanUp();
     Nextscope.ui.addDropdown(payload.header);
+    Nextscope.ui.addSignalSearchIfNeeded(payload.header.length);
     payload.header.forEach(Nextscope.ui.addCheckbox);
 
     if (Nextscope.data.isEcopiaHeader(payload.header)) {
@@ -37,6 +41,9 @@
 
     const traces = signals.map(name => Nextscope.plot.buildTrace(name, 0, rows, xAxis));
     const layout = Nextscope.plot.buildLayout(1, { roworder: 'bottom to top' });
+    Nextscope.state.lastRenderHadSignals = traces.length > 0;
+    Nextscope.state.lastRenderHadTracesOnY1 = traces.length > 0;
+    Nextscope.state.lastRenderHadTracesOnY2 = false;
     Nextscope.plot.render(traces, layout);
   }
 
@@ -53,6 +60,7 @@
 
     Nextscope.ui.cleanUp();
     Nextscope.ui.addDropdown(header);
+    Nextscope.ui.addSignalSearchIfNeeded(header.length);
     header.forEach(Nextscope.ui.addCheckbox);
 
     const traces = [
@@ -60,6 +68,9 @@
       Nextscope.plot.buildTrace(header[2], 1, rows, "TIME")
     ];
     const layout = Nextscope.plot.buildLayout(1, { roworder: 'bottom to top' });
+    Nextscope.state.lastRenderHadSignals = true;
+    Nextscope.state.lastRenderHadTracesOnY1 = true;
+    Nextscope.state.lastRenderHadTracesOnY2 = false;
     Nextscope.plot.render(traces, layout);
     setExampleButtonVisible(false);
   }
@@ -87,6 +98,40 @@
     });
 
     const layout = Nextscope.plot.buildLayout(2);
+
+    if (traces.length === 0) {
+      // No signals selected — reset zoom to autorange
+      layout.xaxis = { ...layout.xaxis, autorange: true };
+      layout.yaxis = { ...layout.yaxis, autorange: true };
+      layout.yaxis2 = { ...layout.yaxis2, autorange: true };
+    } else {
+      const gd = document.getElementById("plot");
+      const hadY1 = Nextscope.state.lastRenderHadTracesOnY1;
+      const hadY2 = Nextscope.state.lastRenderHadTracesOnY2;
+      const hasY1 = checkedBoxes.length > 0;
+      const hasY2 = checkedBoxes2.length > 0;
+
+      // X-axis: preserve when we had any signals before
+      if (Nextscope.state.lastRenderHadSignals && gd && gd.layout && gd.layout.xaxis && gd.layout.xaxis.range) {
+        layout.xaxis = { ...layout.xaxis, range: gd.layout.xaxis.range };
+      }
+
+      // Y-axes: preserve only when that subplot had traces before; first signal in subplot → autorange
+      if (hasY1 && hadY1 && gd && gd.layout && gd.layout.yaxis && gd.layout.yaxis.range) {
+        layout.yaxis = { ...layout.yaxis, range: gd.layout.yaxis.range };
+      } else if (hasY1) {
+        layout.yaxis = { ...layout.yaxis, autorange: true };
+      }
+      if (hasY2 && hadY2 && gd && gd.layout && gd.layout.yaxis2 && gd.layout.yaxis2.range) {
+        layout.yaxis2 = { ...layout.yaxis2, range: gd.layout.yaxis2.range };
+      } else if (hasY2) {
+        layout.yaxis2 = { ...layout.yaxis2, autorange: true };
+      }
+    }
+
+    Nextscope.state.lastRenderHadSignals = traces.length > 0;
+    Nextscope.state.lastRenderHadTracesOnY1 = checkedBoxes.length > 0;
+    Nextscope.state.lastRenderHadTracesOnY2 = checkedBoxes2.length > 0;
     Nextscope.plot.render(traces, layout);
   }
 
@@ -284,23 +329,40 @@
   }
 
   function markDataTips() {
-    const myPlot = document.getElementById('plot');
-    myPlot.on('plotly_click', function (data) {
+    const fontSize = Nextscope.config.dataTipsFontSize ?? 12;
+    const myPlot = document.getElementById("plot");
+    myPlot.on("plotly_click", function (data) {
       for (let i = 0; i < data.points.length; i++) {
-        const annotateText = 'x = ' + data.points[i].x +
-          ', y = ' + data.points[i].y.toPrecision(4);
+        const annotateText = "x = " + data.points[i].x +
+          ", y = " + data.points[i].y.toPrecision(4);
         const annotation = {
           text: annotateText,
           x: data.points[i].x,
           y: parseFloat(data.points[i].y.toPrecision(4)),
           xref: data.points[0].xaxis._id,
-          yref: data.points[0].yaxis._id
+          yref: data.points[0].yaxis._id,
+          font: { size: fontSize }
         };
         const annotations = myPlot.layout.annotations || [];
         annotations.push(annotation);
-        Plotly.relayout('plot', { annotations: annotations });
+        Plotly.relayout("plot", { annotations: annotations });
       }
     });
+  }
+
+  function setDataTipsFontSize() {
+    const defaultSize = Nextscope.config.dataTipsFontSize ?? 12;
+    const sizeInput = prompt("Data tips font size (px):", defaultSize);
+    if (sizeInput == null || sizeInput === "") return;
+    const fontSize = Math.max(8, Math.min(72, parseInt(sizeInput, 10) || defaultSize));
+    Nextscope.config.dataTipsFontSize = fontSize;
+
+    const gd = document.getElementById("plot");
+    const annotations = gd?.layout?.annotations;
+    if (annotations && annotations.length > 0) {
+      const updated = annotations.map((a) => ({ ...a, font: { ...a.font, size: fontSize } }));
+      Plotly.relayout("plot", { annotations: updated });
+    }
   }
 
   function export2csv() {
@@ -390,6 +452,16 @@
     setExampleButtonVisible(true);
     initSidenavResizer();
     initDropIndicator();
+    initDataTipsContextMenu();
+  }
+
+  function initDataTipsContextMenu() {
+    const btn = document.getElementById("dataTipsBtn");
+    if (!btn) return;
+    btn.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      setDataTipsFontSize();
+    });
   }
 
   Nextscope.actions.handleDataLoaded = handleDataLoaded;
@@ -401,6 +473,7 @@
   Nextscope.actions.cutToZoom = cutToZoom;
   Nextscope.actions.relativeTime = relativeTime;
   Nextscope.actions.markDataTips = markDataTips;
+  Nextscope.actions.setDataTipsFontSize = setDataTipsFontSize;
   Nextscope.actions.export2csv = export2csv;
   Nextscope.actions.addLabelsLine = addLabelsLine;
 

@@ -74,10 +74,44 @@
     cont.appendChild(br);
   }
 
+  function addSignalSearchIfNeeded(numSignals) {
+    if (numSignals <= 10) {
+      return;
+    }
+    const checkboxesPlace = document.getElementById("checkboxesPlace");
+    if (!checkboxesPlace) {
+      return;
+    }
+    const wrapper = document.createElement("div");
+    wrapper.id = "signalSearchWrapper";
+    wrapper.className = "signal-search-wrapper";
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "Search signals…";
+    input.id = "signalSearchInput";
+    input.className = "signal-search-input";
+    input.setAttribute("aria-label", "Filter signals");
+    input.oninput = () => {
+      const term = input.value.trim().toLowerCase();
+      const containers = document.getElementsByClassName("container1");
+      for (let i = 0; i < containers.length; i++) {
+        const name = (containers[i].id || "").toLowerCase();
+        containers[i].style.display = term === "" || name.includes(term) ? "" : "none";
+      }
+    };
+    wrapper.appendChild(input);
+    checkboxesPlace.insertBefore(wrapper, checkboxesPlace.firstChild);
+  }
+
   function cleanUp() {
     const explanationText = document.getElementById("explenation_text");
     if (explanationText) {
       explanationText.style.display = "none";
+    }
+
+    const searchWrapper = document.getElementById("signalSearchWrapper");
+    if (searchWrapper) {
+      searchWrapper.remove();
     }
 
     const containers = document.getElementsByClassName("container1");
@@ -98,6 +132,7 @@
   ui.getCheckedBoxes = getCheckedBoxes;
   ui.addDropdown = addDropdown;
   ui.addCheckbox = addCheckbox;
+  ui.addSignalSearchIfNeeded = addSignalSearchIfNeeded;
   ui.cleanUp = cleanUp;
   ui.getXAxisName = getXAxisName;
 })();
