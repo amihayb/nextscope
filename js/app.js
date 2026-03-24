@@ -6,7 +6,10 @@
     fileName: null,
     lastRenderHadSignals: false,
     lastRenderHadTracesOnY1: false,
-    lastRenderHadTracesOnY2: false
+    lastRenderHadTracesOnY2: false,
+    gridRows: 2,
+    gridCols: 1,
+    gridPattern: 'coupled'
   };
   Nextscope.actions = Nextscope.actions || {};
 
@@ -14,6 +17,9 @@
     Nextscope.state.rows = payload.rows;
     Nextscope.state.header = payload.header;
     Nextscope.state.fileName = payload.fileName || null;
+
+    const plotEl = document.getElementById("plot");
+    if (plotEl) plotEl.classList.remove("plot-hidden");
 
     Nextscope.ui.cleanUp();
     Nextscope.ui.addDropdown(payload.header);
@@ -40,7 +46,7 @@
     }
 
     const traces = signals.map(name => Nextscope.plot.buildTrace(name, 0, rows, xAxis));
-    const layout = Nextscope.plot.buildLayout(1, { roworder: 'bottom to top' });
+    const layout = Nextscope.plot.buildLayout(1, 1, { roworder: 'bottom to top' });
     Nextscope.state.lastRenderHadSignals = traces.length > 0;
     Nextscope.state.lastRenderHadTracesOnY1 = traces.length > 0;
     Nextscope.state.lastRenderHadTracesOnY2 = false;
@@ -48,6 +54,9 @@
   }
 
   function showExample() {
+    const plotEl = document.getElementById("plot");
+    if (plotEl) plotEl.classList.remove("plot-hidden");
+
     const header = ["TIME", "Sine", "Cosine", "Random"];
     const rows = Nextscope.data.defineObj(header);
     rows["TIME"] = Plotly.d3.range(0.1, 10, 0.1);
@@ -67,7 +76,7 @@
       Nextscope.plot.buildTrace(header[1], 1, rows, "TIME"),
       Nextscope.plot.buildTrace(header[2], 1, rows, "TIME")
     ];
-    const layout = Nextscope.plot.buildLayout(1, { roworder: 'bottom to top' });
+    const layout = Nextscope.plot.buildLayout(1, 1, { roworder: 'bottom to top' });
     Nextscope.state.lastRenderHadSignals = true;
     Nextscope.state.lastRenderHadTracesOnY1 = true;
     Nextscope.state.lastRenderHadTracesOnY2 = false;
@@ -83,55 +92,82 @@
     button.style.display = isVisible ? "" : "none";
   }
 
+  /** Maps checkbox slot (1..N, top-left to right to bottom) to Plotly subplot index (bottom-to-top). */
+  function visualSlotToPlotlyIndex(slot, rows, cols) {
+    const visRow = Math.floor((slot - 1) / cols) + 1;
+    const visCol = ((slot - 1) % cols) + 1;
+    return (rows - visRow) * cols + visCol;
+  }
+
+  /** For coupled: y-axis index = row. For independent: y-axis index = subplot index. */
+  function plotlyIndexToYAxisIndex(plotlyIndex, r, c) {
+    const pattern = Nextscope.state.gridPattern || "coupled";
+    if (pattern === "coupled") {
+      return Math.floor((plotlyIndex - 1) / c) + 1;
+    }
+    return plotlyIndex;
+  }
+
   function selectSignals() {
-    const checkedBoxes = Nextscope.ui.getCheckedBoxes("signalCheckbox");
-    const checkedBoxes2 = Nextscope.ui.getCheckedBoxes("signalCheckbox2");
     const rows = Nextscope.state.rows;
     const xAxis = Nextscope.ui.getXAxisName();
+    const r = Nextscope.state.gridRows || 2;
+    const c = Nextscope.state.gridCols || 1;
+    const pattern = Nextscope.state.gridPattern || "coupled";
+    const subplotCount = r * c;
+    const yAxisCount = pattern === "coupled" ? r : subplotCount;
+    const xAxisCount = pattern === "coupled" ? c : subplotCount;
 
     const traces = [];
-    checkedBoxes.forEach(box => {
-      traces.push(Nextscope.plot.buildTrace(box.id, 1, rows, xAxis));
-    });
-    checkedBoxes2.forEach(box => {
-      traces.push(Nextscope.plot.buildTrace(box.id, 2, rows, xAxis));
-    });
+    const hadTraces = {};
+    const hasTraces = {};
 
-    const layout = Nextscope.plot.buildLayout(2);
+    for (let slot = 1; slot <= subplotCount; slot++) {
+      const plotlyIndex = visualSlotToPlotlyIndex(slot, r, c);
+      const yAxisIdx = plotlyIndexToYAxisIndex(plotlyIndex, r, c);
+      const chkName = "signalCheckbox" + (slot === 1 ? "" : slot);
+      const checked = Nextscope.ui.getCheckedBoxes(chkName);
+      hadTraces[yAxisIdx] = Nextscope.state["lastRenderHadTracesOnY" + yAxisIdx];
+      hasTraces[yAxisIdx] = hasTraces[yAxisIdx] || checked.length > 0;
+      checked.forEach(box => {
+        traces.push(Nextscope.plot.buildTrace(box.id, plotlyIndex, rows, xAxis));
+      });
+    }
+
+    const layout = Nextscope.plot.buildLayout(r, c);
 
     if (traces.length === 0) {
-      // No signals selected — reset zoom to autorange
-      layout.xaxis = { ...layout.xaxis, autorange: true };
-      layout.yaxis = { ...layout.yaxis, autorange: true };
-      layout.yaxis2 = { ...layout.yaxis2, autorange: true };
+      for (let i = 1; i <= xAxisCount; i++) {
+        const xKey = "xaxis" + (i === 1 ? "" : i);
+        if (layout[xKey]) layout[xKey] = { ...layout[xKey], autorange: true };
+      }
+      for (let i = 1; i <= yAxisCount; i++) {
+        const yKey = "yaxis" + (i === 1 ? "" : i);
+        if (layout[yKey]) layout[yKey] = { ...layout[yKey], autorange: true };
+      }
     } else {
       const gd = document.getElementById("plot");
-      const hadY1 = Nextscope.state.lastRenderHadTracesOnY1;
-      const hadY2 = Nextscope.state.lastRenderHadTracesOnY2;
-      const hasY1 = checkedBoxes.length > 0;
-      const hasY2 = checkedBoxes2.length > 0;
-
-      // X-axis: preserve when we had any signals before
       if (Nextscope.state.lastRenderHadSignals && gd && gd.layout && gd.layout.xaxis && gd.layout.xaxis.range) {
         layout.xaxis = { ...layout.xaxis, range: gd.layout.xaxis.range };
       }
-
-      // Y-axes: preserve only when that subplot had traces before; first signal in subplot → autorange
-      if (hasY1 && hadY1 && gd && gd.layout && gd.layout.yaxis && gd.layout.yaxis.range) {
-        layout.yaxis = { ...layout.yaxis, range: gd.layout.yaxis.range };
-      } else if (hasY1) {
-        layout.yaxis = { ...layout.yaxis, autorange: true };
-      }
-      if (hasY2 && hadY2 && gd && gd.layout && gd.layout.yaxis2 && gd.layout.yaxis2.range) {
-        layout.yaxis2 = { ...layout.yaxis2, range: gd.layout.yaxis2.range };
-      } else if (hasY2) {
-        layout.yaxis2 = { ...layout.yaxis2, autorange: true };
+      for (let i = 1; i <= yAxisCount; i++) {
+        const yKey = "yaxis" + (i === 1 ? "" : i);
+        const had = hadTraces[i];
+        const has = hasTraces[i];
+        if (layout[yKey]) {
+          if (has && had && gd && gd.layout && gd.layout[yKey] && gd.layout[yKey].range) {
+            layout[yKey] = { ...layout[yKey], range: gd.layout[yKey].range };
+          } else if (has) {
+            layout[yKey] = { ...layout[yKey], autorange: true };
+          }
+        }
       }
     }
 
     Nextscope.state.lastRenderHadSignals = traces.length > 0;
-    Nextscope.state.lastRenderHadTracesOnY1 = checkedBoxes.length > 0;
-    Nextscope.state.lastRenderHadTracesOnY2 = checkedBoxes2.length > 0;
+    for (let i = 1; i <= yAxisCount; i++) {
+      Nextscope.state["lastRenderHadTracesOnY" + i] = hasTraces[i];
+    }
     Nextscope.plot.render(traces, layout);
   }
 
@@ -442,6 +478,124 @@
     });
   }
 
+  function initGridDropdown() {
+    const trigger = document.getElementById("grid-dropdown-trigger");
+    const panel = document.getElementById("grid-dropdown-panel");
+    const label = document.getElementById("grid-dropdown-label");
+    const cellsEl = document.getElementById("grid-dropdown-cells");
+    if (!trigger || !panel || !cellsEl) return;
+
+    const GRID_SIZE = 4;
+    for (let row = 1; row <= GRID_SIZE; row++) {
+      for (let col = 1; col <= GRID_SIZE; col++) {
+        const cell = document.createElement("div");
+        cell.className = "grid-dropdown-cell";
+        cell.dataset.row = row;
+        cell.dataset.col = col;
+        cell.setAttribute("role", "gridcell");
+        cellsEl.appendChild(cell);
+      }
+    }
+
+    const cells = cellsEl.querySelectorAll(".grid-dropdown-cell");
+
+    function highlightSelection(hoverRow, hoverCol) {
+      cells.forEach((cell) => {
+        const r = parseInt(cell.dataset.row, 10);
+        const c = parseInt(cell.dataset.col, 10);
+        const inSelection = r <= hoverRow && c <= hoverCol;
+        cell.classList.toggle("in-selection", inSelection);
+        cell.classList.toggle("selected", r === hoverRow && c === hoverCol);
+      });
+      if (label) label.textContent = hoverRow + "×" + hoverCol;
+    }
+
+    function clearHighlight() {
+      const r = Nextscope.state.gridRows || 2;
+      const c = Nextscope.state.gridCols || 1;
+      highlightSelection(r, c);
+    }
+
+    cells.forEach((cell) => {
+      cell.addEventListener("mouseenter", () => {
+        highlightSelection(parseInt(cell.dataset.row, 10), parseInt(cell.dataset.col, 10));
+      });
+      cell.addEventListener("click", (e) => {
+        e.preventDefault();
+        const rows = parseInt(cell.dataset.row, 10);
+        const cols = parseInt(cell.dataset.col, 10);
+        Nextscope.actions.setSubplotGrid(rows, cols);
+        panel.setAttribute("aria-hidden", "true");
+        trigger.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    cellsEl.addEventListener("mouseleave", clearHighlight);
+
+    function positionPanel() {
+      const rect = trigger.getBoundingClientRect();
+      panel.style.top = (rect.bottom + 4) + "px";
+      panel.style.left = rect.left + "px";
+    }
+
+    trigger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isOpen = panel.getAttribute("aria-hidden") === "false";
+      if (!isOpen) {
+        positionPanel();
+      }
+      panel.setAttribute("aria-hidden", String(isOpen));
+      trigger.setAttribute("aria-expanded", String(!isOpen));
+      if (!isOpen) clearHighlight();
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!panel.contains(e.target) && !trigger.contains(e.target)) {
+        panel.setAttribute("aria-hidden", "true");
+        trigger.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  function setSubplotGrid(rows, cols) {
+    Nextscope.state.gridRows = rows;
+    Nextscope.state.gridCols = cols;
+
+    const label = document.getElementById("grid-dropdown-label");
+    if (label) label.textContent = rows + "×" + cols;
+
+    if (Nextscope.ui && Nextscope.ui.refreshCheckboxesForGrid && Nextscope.state.header && Nextscope.state.header.length > 0) {
+      Nextscope.ui.refreshCheckboxesForGrid();
+    }
+    if (Nextscope.actions && Nextscope.actions.selectSignals) {
+      Nextscope.actions.selectSignals();
+    }
+  }
+
+  function setPattern(pattern) {
+    Nextscope.state.gridPattern = pattern;
+    const icon = document.getElementById("pattern-toggle-icon");
+    const btn = document.getElementById("pattern-toggle");
+    if (icon) icon.className = pattern === "coupled" ? "fa fa-link" : "fa fa-unlink";
+    if (btn) {
+      btn.setAttribute("title", pattern === "coupled" ? "Link X axis" : "Unlink X axis");
+    }
+    if (Nextscope.actions && Nextscope.actions.selectSignals) {
+      Nextscope.actions.selectSignals();
+    }
+  }
+
+  function initPatternToggle() {
+    const btn = document.getElementById("pattern-toggle");
+    if (!btn) return;
+    const pattern = Nextscope.state.gridPattern || "coupled";
+    setPattern(pattern);
+    btn.addEventListener("click", () => {
+      const current = Nextscope.state.gridPattern || "coupled";
+      setPattern(current === "coupled" ? "independent" : "coupled");
+    });
+  }
+
   function init() {
     if (Nextscope.io && Nextscope.io.attachFileSelector) {
       Nextscope.io.attachFileSelector();
@@ -453,6 +607,8 @@
     initSidenavResizer();
     initDropIndicator();
     initDataTipsContextMenu();
+    initPatternToggle();
+    initGridDropdown();
   }
 
   function initDataTipsContextMenu() {
@@ -467,6 +623,7 @@
   Nextscope.actions.handleDataLoaded = handleDataLoaded;
   Nextscope.actions.showExample = showExample;
   Nextscope.actions.selectSignals = selectSignals;
+  Nextscope.actions.setSubplotGrid = setSubplotGrid;
   Nextscope.actions.menuItemExecute = menuItemExecute;
   Nextscope.actions.renameVar = renameVar;
   Nextscope.actions.showStat = showStat;

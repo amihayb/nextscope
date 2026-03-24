@@ -244,7 +244,7 @@
       : header.filter(name => name !== xAxis).slice(0, 2);
 
     const traces = signals.map(name => Nextscope.plot.buildTrace(name, 0, rows, xAxis));
-    const layout = Nextscope.plot.buildLayout(1, { roworder: 'bottom to top' });
+    const layout = Nextscope.plot.buildLayout(1, 1, { roworder: 'bottom to top' });
     Nextscope.plot.render(traces, layout);
   }
 

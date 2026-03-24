@@ -66,6 +66,19 @@
     <a onclick="Nextscope.actions.relativeTime()" title="Relative Time"><i class="fa fa-history"></i></a>
     <a id="dataTipsBtn" onclick="Nextscope.actions.markDataTips()" title="Data Tips (right-click to change size)"><i class="fa fa-map-marker"></i></a>
     <a onclick="Nextscope.actions.showStat()" title="Show Statistics"><i class="fa fa-list-ol"></i></a>
+    <button class="pattern-toggle" id="pattern-toggle" title="Link X axis" aria-label="Toggle subplot pattern">
+      <i class="fa fa-link" id="pattern-toggle-icon"></i>
+    </button>
+    <div class="grid-dropdown-wrapper">
+      <button class="grid-dropdown-trigger" id="grid-dropdown-trigger" title="Subplot Grid" aria-label="Subplot grid" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-th"></i>
+        <i class="fa fa-caret-down grid-chevron"></i>
+      </button>
+      <div class="grid-dropdown-panel" id="grid-dropdown-panel" role="menu" aria-hidden="true">
+        <span class="grid-dropdown-label" id="grid-dropdown-label">2×1</span>
+        <div class="grid-dropdown-cells" id="grid-dropdown-cells" role="grid"></div>
+      </div>
+    </div>
     <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
       <i class="fa fa-moon-o" id="theme-icon"></i>
     </button>
@@ -98,7 +111,7 @@
       <i class="fa fa-arrow-down"></i>
     </div>
   </div>
-  <div class="plot" id="plot">
+  <div class="plot plot-hidden" id="plot">
   </div>
   <nav id="context-menu" class="context-menu">
     <ul class="context-menu__items">

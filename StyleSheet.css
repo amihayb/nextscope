@@ -386,6 +386,10 @@ span {
   background-color: var(--color-bg);
 }
 
+.plot-hidden {
+  display: none !important;
+}
+
 body.labels-open {
   padding-top: 130px;
 }
@@ -441,6 +445,18 @@ body.resizing {
   .sidenav a {
     font-size: 18px;
   }
+}
+
+/* Signal checkboxes - multiple per row for subplot selection */
+.container1 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 6px;
+}
+
+.container1 input[type="checkbox"] {
+  flex-shrink: 0;
 }
 
 /* Checkbox container */
@@ -619,4 +635,109 @@ select:focus-visible {
 .theme-toggle:active #theme-icon {
   opacity: 0.6;
   transform: rotate(30deg);
+}
+
+/* ─── Subplot pattern toggle ─────────────────────────────────────────────── */
+.pattern-toggle {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  padding: 10px 14px;
+  font-size: 18px;
+  border-radius: 12px;
+  margin-right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease;
+}
+
+.pattern-toggle:hover {
+  background-color: var(--color-border);
+}
+
+/* ─── Subplot grid dropdown (Word-style) ─────────────────────────────────── */
+.grid-dropdown-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.grid-dropdown-trigger {
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  padding: 10px 14px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 12px;
+  transition: background-color 0.15s ease;
+}
+
+.grid-dropdown-trigger:hover {
+  background-color: var(--color-border);
+}
+
+.grid-chevron {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.grid-dropdown-panel {
+  display: none;
+  position: fixed;
+  /* top/left set by JS to align under the trigger */
+  margin-top: 4px;
+  padding: 12px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-elevated);
+  z-index: 1000;
+  min-width: 200px;
+}
+
+.grid-dropdown-panel[aria-hidden="false"] {
+  display: block;
+}
+
+.grid-dropdown-label {
+  display: block;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 10px;
+}
+
+.grid-dropdown-cells {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 2px;
+  width: 108px;
+  height: 108px;
+}
+
+.grid-dropdown-cell {
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  cursor: pointer;
+  background-color: transparent;
+  transition: border-color 0.1s, background-color 0.1s;
+}
+
+.grid-dropdown-cell:hover,
+.grid-dropdown-cell.selected {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-alpha);
+}
+
+.grid-dropdown-cell.in-selection {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-alpha);
 }
