@@ -79,6 +79,9 @@
         <div class="grid-dropdown-cells" id="grid-dropdown-cells" role="grid"></div>
       </div>
     </div>
+    <button class="views-toggle" id="views-toggle-btn" onclick="Nextscope.views.toggle()" aria-label="Toggle views" aria-expanded="false" title="Views">
+      <i class="fa fa-bookmark-o"></i>
+    </button>
     <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
       <i class="fa fa-moon-o" id="theme-icon"></i>
     </button>
@@ -96,6 +99,21 @@
     <div class="checkboxesPlace" id="checkboxesPlace"></div>
   </div>
   <div id="sidenav-resizer" aria-hidden="true"></div>
+  <div id="viewsnav" aria-label="Views" role="complementary">
+    <button class="viewsnav-save-btn" id="viewsnav-save-btn" title="Save current configuration as a new view">
+      <i class="fa fa-plus"></i> Save View
+    </button>
+    <div id="viewsnav-list" class="viewsnav-list"></div>
+    <div class="viewsnav-footer">
+      <button class="viewsnav-footer-btn" id="viewsnav-export-btn" title="Download views as JSON">
+        <i class="fa fa-download"></i> Export
+      </button>
+      <button class="viewsnav-footer-btn" id="viewsnav-import-btn" title="Load views from JSON file">
+        <i class="fa fa-folder-open"></i> Import
+      </button>
+      <input type="file" id="viewsnav-import-input" accept=".json" style="display:none">
+    </div>
+  </div>
   <div id="explenation_text">
     <h1 class="explenation-header">Nextscope – NextPower Telemetry Analysis</h1>
     •	Load CSV or text files with your data in columns.<br>
@@ -169,6 +187,7 @@
   <script src="js/contextMenu.js"></script>
   <script src="js/theme.js"></script>
   <script src="js/serial.js"></script>
+  <script src="js/views.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {

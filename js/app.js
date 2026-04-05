@@ -624,6 +624,7 @@
   Nextscope.actions.showExample = showExample;
   Nextscope.actions.selectSignals = selectSignals;
   Nextscope.actions.setSubplotGrid = setSubplotGrid;
+  Nextscope.actions.setPattern = setPattern;
   Nextscope.actions.menuItemExecute = menuItemExecute;
   Nextscope.actions.renameVar = renameVar;
   Nextscope.actions.showStat = showStat;

@@ -1,6 +1,7 @@
 :root {
   /* Layout */
   --sidenav-width: 280px;
+  --viewsnav-width: 170px;
   --explenation-offset: 300px;
   --plot-offset: 260px;
   --font-size-base: 20px;
@@ -740,4 +741,186 @@ select:focus-visible {
 .grid-dropdown-cell.in-selection {
   border-color: var(--color-primary);
   background-color: var(--color-primary-alpha);
+}
+
+/* ─── Views toggle button (topnav) ──────────────────────────────────────── */
+.views-toggle {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 18px;
+  line-height: 1;
+  margin-right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.views-toggle:hover {
+  background-color: var(--color-border);
+}
+
+.views-toggle[aria-expanded="true"] {
+  background-color: var(--color-primary-alpha);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* ─── Views sidebar panel ────────────────────────────────────────────────── */
+#viewsnav {
+  display: none;
+  flex-direction: column;
+  position: fixed;
+  z-index: 2;
+  top: 65px;
+  bottom: 0;
+  left: var(--sidenav-width);
+  width: var(--viewsnav-width);
+  background-color: var(--color-surface);
+  border-left: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+body.views-open #viewsnav {
+  display: flex;
+}
+
+body.views-open .plot {
+  margin-left: calc(var(--plot-offset) + var(--viewsnav-width));
+}
+
+body.views-open #explenation_text {
+  margin-left: calc(var(--explenation-offset) + var(--viewsnav-width));
+}
+
+body.views-open #sidenav-resizer {
+  /* keep resizer on top of viewsnav left edge */
+  z-index: 6;
+}
+
+body.labels-open #viewsnav {
+  top: 130px;
+}
+
+/* ─── "Save View" button at the top of the panel ────────────────────────── */
+.viewsnav-save-btn {
+  flex-shrink: 0;
+  width: 100%;
+  padding: 14px 10px;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  border: none;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.15s ease;
+}
+
+.viewsnav-save-btn:hover {
+  background-color: var(--color-secondary);
+}
+
+/* ─── Scrollable list of view buttons ────────────────────────────────────── */
+.viewsnav-list {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 4px;
+  min-height: 0;
+}
+
+.viewsnav-row {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+}
+
+.viewsnav-view-btn {
+  flex: 1 1 auto;
+  padding: 8px 10px;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.viewsnav-view-btn:hover {
+  background-color: var(--color-primary-alpha);
+  border-color: var(--color-primary);
+}
+
+.viewsnav-delete-btn {
+  flex-shrink: 0;
+  width: 28px;
+  padding: 0;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.viewsnav-delete-btn:hover {
+  background-color: var(--color-error);
+  color: #fff;
+  border-color: var(--color-error);
+}
+
+/* ─── Footer (Export / Import) ───────────────────────────────────────────── */
+.viewsnav-footer {
+  flex-shrink: 0;
+  display: flex;
+  border-top: 1px solid var(--color-border);
+}
+
+.viewsnav-footer-btn {
+  flex: 1 1 50%;
+  padding: 10px 4px;
+  background: none;
+  border: none;
+  border-right: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.viewsnav-footer-btn:last-child {
+  border-right: none;
+}
+
+.viewsnav-footer-btn:hover {
+  background-color: var(--color-border);
+  color: var(--color-text-primary);
 }
