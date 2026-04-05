@@ -9,7 +9,8 @@
     lastRenderHadTracesOnY2: false,
     gridRows: 2,
     gridCols: 1,
-    gridPattern: 'coupled'
+    gridPattern: 'coupled',
+    operationsLog: []
   };
   Nextscope.actions = Nextscope.actions || {};
 
@@ -17,6 +18,7 @@
     Nextscope.state.rows = payload.rows;
     Nextscope.state.header = payload.header;
     Nextscope.state.fileName = payload.fileName || null;
+    Nextscope.state.operationsLog = [];
 
     const plotEl = document.getElementById("plot");
     if (plotEl) plotEl.classList.remove("plot-hidden");
@@ -192,40 +194,48 @@
           const newVarName = Nextscope.data.strClean(caller + "_x_" + factor);
           rows[newVarName] = Nextscope.data.transforms.mult(rows[caller], factor);
           Nextscope.ui.addCheckbox(newVarName);
+          Nextscope.state.operationsLog.push({ type: 'Mult', source: caller, result: newVarName, params: { factor: Number(factor) } });
         }
         break;
       }
       case "Diff":
         rows[caller + "_diff"] = Nextscope.data.transforms.diff(rows[caller]);
         Nextscope.ui.addCheckbox(caller + "_diff");
+        Nextscope.state.operationsLog.push({ type: 'Diff', source: caller, result: caller + "_diff", params: {} });
         break;
       case "Integrate":
         rows[caller + "_int"] = Nextscope.data.transforms.integrate(rows[caller]);
         Nextscope.ui.addCheckbox(caller + "_int");
+        Nextscope.state.operationsLog.push({ type: 'Integrate', source: caller, result: caller + "_int", params: {} });
         break;
       case "filter": {
         const filterW = prompt("LPF Cutoff Frequency? [Hz] ", 5);
         if (filterW !== null) {
           rows[caller + "_filter"] = Nextscope.data.transforms.filter(rows[caller], filterW);
           Nextscope.ui.addCheckbox(caller + "_filter");
+          Nextscope.state.operationsLog.push({ type: 'filter', source: caller, result: caller + "_filter", params: { cutoff: Number(filterW) } });
         }
         break;
       }
       case "Detrend":
         rows[caller + "_detrend"] = Nextscope.data.transforms.detrend(rows[caller]);
         Nextscope.ui.addCheckbox(caller + "_detrend");
+        Nextscope.state.operationsLog.push({ type: 'Detrend', source: caller, result: caller + "_detrend", params: {} });
         break;
       case "removeFirst":
         rows[caller + "_rem1"] = Nextscope.data.transforms.removeFirst(rows[caller]);
         Nextscope.ui.addCheckbox(caller + "_rem1");
+        Nextscope.state.operationsLog.push({ type: 'removeFirst', source: caller, result: caller + "_rem1", params: {} });
         break;
       case "removeMean":
         rows[caller + "_remMean"] = Nextscope.data.transforms.removeMean(rows[caller]);
         Nextscope.ui.addCheckbox(caller + "_remMean");
+        Nextscope.state.operationsLog.push({ type: 'removeMean', source: caller, result: caller + "_remMean", params: {} });
         break;
       case "fixAngle":
         rows[caller + "_angFix"] = Nextscope.data.transforms.fixAngle(rows[caller]);
         Nextscope.ui.addCheckbox(caller + "_angFix");
+        Nextscope.state.operationsLog.push({ type: 'fixAngle', source: caller, result: caller + "_angFix", params: {} });
         break;
       case "showStat":
         showStat();

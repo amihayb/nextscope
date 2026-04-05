@@ -35,7 +35,37 @@
         .map(cb => cb.id);
     }
 
-    return { xAxis, gridRows, gridCols, gridPattern, checkedBySlot };
+    const operationsLog = [...((Nextscope.state && Nextscope.state.operationsLog) || [])];
+
+    return { xAxis, gridRows, gridCols, gridPattern, checkedBySlot, operationsLog };
+  }
+
+  function replayOperations(ops) {
+    if (!ops || ops.length === 0) return;
+    const rows = Nextscope.state.rows;
+    const transforms = Nextscope.data && Nextscope.data.transforms;
+    if (!transforms) return;
+
+    ops.forEach(op => {
+      if (!rows[op.source]) return; // source signal not present in loaded data
+      let result;
+      switch (op.type) {
+        case 'Mult':        result = transforms.mult(rows[op.source], op.params.factor); break;
+        case 'Diff':        result = transforms.diff(rows[op.source]); break;
+        case 'Integrate':   result = transforms.integrate(rows[op.source]); break;
+        case 'filter':      result = transforms.filter(rows[op.source], op.params.cutoff); break;
+        case 'Detrend':     result = transforms.detrend(rows[op.source]); break;
+        case 'removeFirst': result = transforms.removeFirst(rows[op.source]); break;
+        case 'removeMean':  result = transforms.removeMean(rows[op.source]); break;
+        case 'fixAngle':    result = transforms.fixAngle(rows[op.source]); break;
+        default: return;
+      }
+      if (result) {
+        rows[op.result] = result;
+        Nextscope.ui.addCheckbox(op.result);
+        Nextscope.state.operationsLog.push(op);
+      }
+    });
   }
 
   function applyView(view) {
@@ -54,6 +84,9 @@
     if (xAxisEl && view.xAxis) {
       xAxisEl.value = view.xAxis;
     }
+
+    // Replay signal operations (creates derived signals like _diff, _x_0.5, etc.)
+    replayOperations(view.operationsLog);
 
     // Uncheck all checkboxes
     document.querySelectorAll('input[type=checkbox]').forEach(cb => {
